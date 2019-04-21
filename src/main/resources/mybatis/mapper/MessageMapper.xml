@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.MessageDao">
+  <resultMap id="BaseResultMap" type="entity.Message">
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="content" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="username" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="create_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, content, username, create_datetime, update_datetime
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from messages
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectOrderByLimitAndOffset" resultMap="BaseResultMap">
+    select * from messages
+    <where>
+      <if test="since != null"> update_datetime > #{since} </if>
+    </where>
+    order by #{orderByField}
+    limit #{limit}
+    offset #{offset}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from messages
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="entity.Message"
+    useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    insert into messages (content, username)
+    values (#{content,jdbcType=VARCHAR}, #{username,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="entity.Message">
+    insert into messages
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="content != null">
+        content,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="entity.Message">
+    update messages
+    <set>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        username = #{username,jdbcType=CHAR},
+      </if>
+      <if test="createDatetime != null">
+        create_datetime = #{createDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDatetime != null">
+        update_datetime = #{updateDatetime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="entity.Message">
+    update messages
+    set content = #{content,jdbcType=VARCHAR},
+      username = #{username,jdbcType=CHAR},
+      create_datetime = #{createDatetime,jdbcType=TIMESTAMP},
+      update_datetime = #{updateDatetime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

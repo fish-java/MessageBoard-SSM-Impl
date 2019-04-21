@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!--导入属性配置,按照类路径来导入 -->
+    <properties resource="mybatis/jdbc.properties"/>
+
+    <context id="default" targetRuntime="MyBatis3">
+
+        <!-- jdbc的数据库连接 -->
+        <jdbcConnection driverClass="${jdbc.driver}"
+                        connectionURL="${jdbc.url}"
+                        userId="${jdbc.username}">
+        </jdbcConnection>
+
+        <!-- Model模型生成器,用来生成含有主键key的类，记录类 以及查询Example类
+            targetPackage     指定生成的model生成所在的包名
+            targetProject     指定在该项目下所在的路径
+        -->
+        <javaModelGenerator targetPackage="entity" targetProject="src/main/java">
+            <!-- 是否对model添加构造函数 -->
+            <property name="constructorBased" value="true"/>
+
+            <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
+            <property name="enableSubPackages" value="false"/>
+
+            <!-- 建立的Model对象是否 不可改变  即生成的Model对象不会有 setter方法，只有构造方法 -->
+            <property name="immutable" value="false"/>
+
+        </javaModelGenerator>
+
+        <!-- Mapper映射文件生成所在的目录 为每一个数据库的表生成对应的SqlMap文件 -->
+        <sqlMapGenerator targetPackage="mybatis/mapper"
+                         targetProject="src/main/resources">
+        </sqlMapGenerator>
+
+
+        <!-- 客户端代码，生成易于使用的针对Model对象和XML配置文件 的代码
+                type="ANNOTATEDMAPPER",生成Java Model 和基于注解的Mapper对象
+                type="MIXEDMAPPER",生成基于注解的Java Model 和相应的Mapper对象
+                type="XMLMAPPER",生成SQLMap XML文件和独立的Mapper接口
+        -->
+        <javaClientGenerator targetPackage="dao"
+                             targetProject="src/main/java"
+                             type="XMLMAPPER">
+        </javaClientGenerator>
+
+        <table tableName="users" domainObjectName="User"/>
+        <table tableName="messages" domainObjectName="Message"/>
+    </context>
+</generatorConfiguration>
